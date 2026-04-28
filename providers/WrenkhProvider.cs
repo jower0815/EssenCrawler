@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using EssenCrawler.Core;
 using HtmlAgilityPack;
 
@@ -5,10 +6,10 @@ namespace EssenCrawler.Providers;
 
 public class WrenkhProvider : IMenuProvider
 {
-    public string Name => "Dummy";
+    public string Name => "Wrenkh";
     private readonly Fetcher _fetcher; 
-    private const string Url = "https://example.com";
-    private const string Address = "Example, Lange Gasse 123, 1010 Wien";
+    private const string Url = "https://wrenkh-wien.at/site/de/restaurant/mittagsmenue";
+    private const string Address = "WRENKH, Bauernmarkt 10, 1010 Wien";
 
     public WrenkhProvider(Fetcher fetcher)
     {
@@ -21,7 +22,7 @@ public class WrenkhProvider : IMenuProvider
         {
             Restaurant = Name,
             Date = date.Date,
-            Source = "internal",
+            Source = "https://wrenkh-wien.at/",
             Address = Address
         };
 
@@ -30,11 +31,56 @@ public class WrenkhProvider : IMenuProvider
 
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
-            var datum = DateTime.Today.ToString("ddd").ToUpper();
-            var DayDiv = doc.DocumentNode.SelectSingleNode($".//p[normalize-space(text()) = 'DI']");
 
+            var datum = DateTime.Today.ToString("ddd")
+                .ToUpper()
+                .Replace(".", "");
             
+            var dayTitle = doc.DocumentNode.SelectSingleNode(
+                $"//p[contains(concat(' ', normalize-space(@class), ' '), ' title ') and normalize-space(.) = '{datum}']"
+            );
             
+            if (dayTitle == null)
+                return result;
+            
+            var itemBlock = dayTitle.SelectSingleNode(
+                "./ancestor::div[contains(concat(' ', normalize-space(@class), ' '), ' item_b ')][1]"
+            );
+            
+            if (itemBlock == null)
+                return result;
+            
+            var menuItems = itemBlock.SelectNodes(
+                ".//div[contains(concat(' ', normalize-space(@class), ' '), ' inner_it ')]"
+            );
+            
+            if (menuItems == null)
+                return result;
+            
+            var sections = new[]
+            {
+                result.GetOrAddSection("Vorspeise"),
+                result.GetOrAddSection("Salat"),
+                result.GetOrAddSection("Hauptspeise")
+            };
+            
+            for (int i = 0; i < menuItems.Count && i < sections.Length; i++)
+            {
+                var textParts = menuItems[i].SelectNodes(
+                    ".//div[contains(concat(' ', normalize-space(@class), ' '), ' text_wrapper ')]//p"
+                );
+            
+                if (textParts == null)
+                    continue;
+            
+                var item = string.Join(" ",
+                    textParts
+                        .Select(p => HtmlEntity.DeEntitize(p.InnerText.Trim()))
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                );
+            
+                sections[i].Items.Add(item);
+            }
 
             return result;
 

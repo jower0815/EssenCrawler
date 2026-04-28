@@ -57,7 +57,7 @@ var providers = new List<IMenuProvider>
     new TonisProvider(),
     new TopfUDeckelProvider(fetcher),
     new TopLokalProvider(fetcher),
-    //new WrenkhProvider(fetcher)
+    new WrenkhProvider(fetcher)
 
 };
 

@@ -57,7 +57,7 @@ public class FladereiProvider : IMenuProvider
 
         if (!string.IsNullOrWhiteSpace(tagesFladeText))
         {
-            var tagesFladeSection = result.GetOrAddSection("Tageslade");
+            var tagesFladeSection = result.GetOrAddSection("Tagesflade");
             tagesFladeSection.Items.Add($"Tagesfladen: {tagesFladeText}");
             result.Status = "OK";
         }
