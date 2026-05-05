@@ -12,7 +12,6 @@ public class BieradiesProvider : IMenuProvider
     private const string MittagsURL = "https://www.bieradies.co.at/speisekarte";
     private const string Address = "Bieradies, Judenplatz 1, 1010 Wien";
 
-    private const string PdfUrl = "https://dummy.pdf";
 
     public BieradiesProvider(Fetcher fetcher)
     {
@@ -26,7 +25,6 @@ public class BieradiesProvider : IMenuProvider
             Restaurant = Name,
             Date = date.Date,
             Source = Url,
-            EmbedUrl = PdfUrl,
             EmbedType = "pdf",
             Status = "OK",
             Address = Address
@@ -39,7 +37,7 @@ public class BieradiesProvider : IMenuProvider
         doc.LoadHtml(html);
 
         var Wochenmenue = GetMonday(date).ToString("dd");
-        var xpath = $"//a[contains(@href,'-Men')]";
+        var xpath = $"//a[contains(@href,'-men')]";
         var link = doc.DocumentNode.SelectSingleNode(xpath)?.GetAttributeValue("href","");
 
         r.EmbedUrl = link;
