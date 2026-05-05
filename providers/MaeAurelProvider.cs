@@ -7,7 +7,7 @@ public class MaeAurelProvider : IMenuProvider
 {
     public string Name => "MaeAurel";
     private readonly Fetcher _fetcher; 
-    private const string Url = "https://maeaurel.com/lunchkarte/";
+    private const string Url = "https://maeaurel.com/salzgries/";
     private const string Address = "MAE AUREL, Salzgries 3, 1010 Wien";
 
     public MaeAurelProvider(Fetcher fetcher)
@@ -31,11 +31,13 @@ public class MaeAurelProvider : IMenuProvider
 
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
-            var datum = DateTime.Today.ToString("yyyy");
-            var img = doc.DocumentNode.SelectSingleNode($"//img[contains(@src, '{datum}')]");
+            //var datum = DateTime.Today.ToString("yyyy");
+            //var img = doc.DocumentNode.SelectSingleNode($"//img[contains(@src, '{datum}')]");
+            var xpath = $"//a[contains(@href,'Lunch')]";
+            var link = doc.DocumentNode.SelectSingleNode(xpath)?.GetAttributeValue("href","");
 
             
-            result.ImageUrl = img.GetAttributeValue("src", "./404.png");
+            result.ImageUrl = link;
 
             return result;
 
