@@ -28,7 +28,7 @@ public static class HtmlOutput
         sb.AppendLine("<div class='fixed-header'>");
         sb.AppendLine("<a href='#' class='up-button'>🔼</a>");
         sb.AppendLine($"<h1>Mittagsmenüs für  – {date:dddd, dd.MMMM.yyyy}</h1>");
-        sb.AppendLine("<b><a href='Allergene.pdf' style='color:White;' target='_blank' class='Allergene'>Allergene</a></b>");
+        sb.AppendLine("<b><a href='Allergene.pdf' style='color:White;' target='_blank' class='Allergene'>🥜🍶 Allergene 🫘🦐</a></b>");
         sb.AppendLine("</div>");
 
         foreach (var r in results)
