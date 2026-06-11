@@ -44,7 +44,7 @@ public class WrenkhProvider : IMenuProvider
                 return result;
             
             var itemBlock = dayTitle.SelectSingleNode(
-                "./ancestor::div[contains(concat(' ', normalize-space(@class), ' '), ' item_b ')][1]"
+                "./ancestor::div[starts-with(@class, 'item_')][1]"
             );
             
             if (itemBlock == null)

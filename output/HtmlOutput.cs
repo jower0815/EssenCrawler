@@ -89,7 +89,7 @@ public static class HtmlOutput
         if (!string.IsNullOrWhiteSpace(r.ImageUrl))
         {
             sb.AppendLine("<div class='embed'>");
-            sb.AppendLine($"    <img src='{EscapeAttr(r.ImageUrl)}' loading='lazy'>");
+            sb.AppendLine($"    <img src='{EscapeAttr(r.ImageUrl)}' loading='lazy' referrerpolicy='no-referrer'>");
             sb.AppendLine("</div>");
         }
 

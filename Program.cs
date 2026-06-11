@@ -52,6 +52,7 @@ var providers = new List<IMenuProvider>
     new QeroProvider(fetcher),
     new RadatzProvider(fetcher),
     new SchachtelwirtProvider(fetcher),
+    new SparkysProvider(fetcher),
     //new SchoenScharfProvider(fetcher),
     //new SubwayProvider(fetcher),
     new TonisProvider(),

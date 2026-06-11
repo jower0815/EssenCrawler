@@ -35,7 +35,7 @@ public class KarmaFoodProvider : IMenuProvider
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
-        var xpath = $"//a[contains(@href,'Wochenmenu')]";
+        var xpath = $"//a[contains(@href,'Mittagessen')]";
         var link = doc.DocumentNode.SelectSingleNode(xpath)?.GetAttributeValue("href","");
 
         r.EmbedUrl = link;
