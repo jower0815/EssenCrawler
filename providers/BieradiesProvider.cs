@@ -36,8 +36,8 @@ public class BieradiesProvider : IMenuProvider
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
-        var Wochenmenue = GetMonday(date).ToString("dd");
-        var xpath = $"//a[contains(@href,'-men')]";
+        var Wochenmenue = GetMonday(date).ToString("dd.M.");
+        var xpath = $"//a[contains(@href,'{Wochenmenue}')]";
         var link = doc.DocumentNode.SelectSingleNode(xpath)?.GetAttributeValue("href","");
 
         r.EmbedUrl = link;

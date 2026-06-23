@@ -64,22 +64,24 @@ public class FladereiProvider : IMenuProvider
 
         var wochenTable = doc.DocumentNode.SelectSingleNode("//table[@title='Wochenfladen']");
 
-        var wRow = wochenTable.SelectSingleNode(".//tr");
+        if (wochenTable != null){
+            var wRow = wochenTable.SelectSingleNode(".//tr");
 
-        var WochenFlade = wRow.SelectSingleNode("./td[2]");
-        var WochenPrice = NormalizeWhitespace(HtmlEntity.DeEntitize(wRow.SelectSingleNode("./td[3]")?.InnerText ?? ""));
-        var wallergenNode = WochenFlade.SelectSingleNode(".//smallblue");
-        wallergenNode?.Remove();
+            var WochenFlade = wRow.SelectSingleNode("./td[2]");
+            var WochenPrice = NormalizeWhitespace(HtmlEntity.DeEntitize(wRow.SelectSingleNode("./td[3]")?.InnerText ?? ""));
+            var wallergenNode = WochenFlade.SelectSingleNode(".//smallblue");
+            wallergenNode?.Remove();
 
-        var WochenFladeText = NormalizeWhitespace(HtmlEntity.DeEntitize(WochenFlade?.InnerText ?? ""));
-        WochenFladeText += $" - {WochenPrice}";
+            var WochenFladeText = NormalizeWhitespace(HtmlEntity.DeEntitize(WochenFlade?.InnerText ?? ""));
+            WochenFladeText += $" - {WochenPrice}";
 
 
-        if (!string.IsNullOrWhiteSpace(WochenFladeText))
-        {
-            var WochenFladeSection = result.GetOrAddSection("Wochenflade");
-            WochenFladeSection.Items.Add($"Wochenflade: {WochenFladeText}");
-            result.Status = "OK";
+            if (!string.IsNullOrWhiteSpace(WochenFladeText))
+            {
+                var WochenFladeSection = result.GetOrAddSection("Wochenflade");
+                WochenFladeSection.Items.Add($"Wochenflade: {WochenFladeText}");
+                result.Status = "OK";
+            }
         }
 
 
