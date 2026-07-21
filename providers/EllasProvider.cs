@@ -8,7 +8,7 @@ public class EllasProvider : IMenuProvider
 {
     public string Name => "Ellas";
     private readonly Fetcher _fetcher; 
-    private const string Url = "https://www.ellas.at/";
+    private const string Url = "https://ellas.at/essen-trinken/";
     private const string Address = "Ellas, Judenplatz 9, 1010 Wien";
 
     public EllasProvider(Fetcher fetcher)
@@ -22,7 +22,7 @@ public class EllasProvider : IMenuProvider
         {
             Restaurant = Name,
             Date = date.Date,
-            Source = Url,
+            Source = "https://www.ellas.at/",
             EmbedUrl = "",
             EmbedType = "pdf",
             Status = "OK",
@@ -36,7 +36,7 @@ public class EllasProvider : IMenuProvider
         doc.LoadHtml(html);
 
 
-        var xpath = $"//a[contains(@href,'Mittagsmenue')]";
+        var xpath = $"//a[contains(@href,'Mittagsmenu')]";
         var link = doc.DocumentNode.SelectSingleNode(xpath)?.GetAttributeValue("href","");
 
         r.EmbedUrl = link;

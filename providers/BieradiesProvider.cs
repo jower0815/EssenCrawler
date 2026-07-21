@@ -40,6 +40,13 @@ public class BieradiesProvider : IMenuProvider
         var xpath = $"//a[contains(@href,'{Wochenmenue}')]";
         var link = doc.DocumentNode.SelectSingleNode(xpath)?.GetAttributeValue("href","");
 
+        if (string.IsNullOrWhiteSpace(link))
+            {
+                xpath = $"//a[contains(@href,'wochenkarte')]";
+                link = doc.DocumentNode.SelectSingleNode(xpath)?.GetAttributeValue("href",""); 
+            }
+
+
         r.EmbedUrl = link;
 
 

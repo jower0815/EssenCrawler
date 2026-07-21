@@ -49,10 +49,10 @@ var providers = new List<IMenuProvider>
     new MaeAurelProvider(fetcher),
     new MisoUProvider(),
     new NirvanaProvider(fetcher),
+    new PhoLinhProvider(fetcher),
     new QeroProvider(fetcher),
     new RadatzProvider(fetcher),
     new SchachtelwirtProvider(fetcher),
-    new SparkysProvider(fetcher),
     //new SchoenScharfProvider(fetcher),
     //new SubwayProvider(fetcher),
     new TonisProvider(),
@@ -99,7 +99,7 @@ if(!Directory.Exists(destPath))
     Directory.CreateDirectory(destPath);
 }
 
-var htmlPath = Path.Combine(destPath,$"Mittagsmenu.html");
+var htmlPath = Path.Combine(destPath,$"mittagsmenu.html");
 
 File.WriteAllText(htmlPath, html);
 Console.WriteLine($"HTML geschrieben nach: {htmlPath}");
