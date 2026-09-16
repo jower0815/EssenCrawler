@@ -48,6 +48,13 @@ public class TopfUDeckelProvider : IMenuProvider
 
             var MenuSections = doc.DocumentNode.SelectNodes("//div[contains(@class, 'mb-4')]");
 
+            if (MenuSections == null)
+            {
+                result.Status = "NO_DATA";
+                result.Notes = "Keine Menu-Sections gefunden.";
+                return result;
+            }
+
             foreach (var MenuCard in MenuSections)
             {
                 switch(MenuCard.InnerText)
@@ -55,7 +62,7 @@ public class TopfUDeckelProvider : IMenuProvider
                     case var naming when naming.StartsWith("Starters"):
                     {
                         var EssensItems = MenuCard.SelectNodes(".//h3");
-                        foreach (var EssensItem in EssensItems)
+                        foreach (var EssensItem in EssensItems ?? Enumerable.Empty<HtmlNode>())
                         {
                             var CleanedItem = WebUtility.HtmlDecode(EssensItem.InnerText);
                             starters.Items.Add(CleanedItem);
@@ -65,7 +72,7 @@ public class TopfUDeckelProvider : IMenuProvider
                     case var naming when naming.StartsWith("Main"):
                     {
                         var EssensItems = MenuCard.SelectNodes(".//h3");
-                        foreach (var EssensItem in EssensItems)
+                        foreach (var EssensItem in EssensItems ?? Enumerable.Empty<HtmlNode>())
                         {
                             var CleanedItem = WebUtility.HtmlDecode(EssensItem.InnerText);
                             main.Items.Add(CleanedItem);
@@ -75,7 +82,7 @@ public class TopfUDeckelProvider : IMenuProvider
                     case var naming when naming.StartsWith("Dessert"):
                     {
                         var EssensItems = MenuCard.SelectNodes(".//h3");
-                        foreach (var EssensItem in EssensItems)
+                        foreach (var EssensItem in EssensItems ?? Enumerable.Empty<HtmlNode>())
                         {
                             var CleanedItem = WebUtility.HtmlDecode(EssensItem.InnerText);
                             dessert.Items.Add(CleanedItem);
@@ -104,88 +111,4 @@ public class TopfUDeckelProvider : IMenuProvider
         }
     }
 
-    private static void AddSection(MenuResult result, string title, List<TopfItem>? items)
-    {
-        if (items == null || items.Count == 0)
-            return;
-
-        var section = new MenuSection { Title = title };
-
-        foreach (var item in items)
-        {
-            if (item == null)
-                continue;
-
-            var name = item.Name?.Trim() ?? "";
-            var description = item.Description?.Trim() ?? "";
-
-            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(description))
-                continue;
-
-            var line = name;
-
-            if (!string.IsNullOrWhiteSpace(description))
-                line = string.IsNullOrWhiteSpace(line) ? description : $"{line} — {description}";
-
-            section.Items.Add(line);
-        }
-
-        if (section.Items.Count > 0)
-            result.Sections.Add(section);
-    }
-
-    private class TopfMenu
-    {
-        [JsonConverter(typeof(SingleOrArrayConverter<TopfItem>))]
-        public List<TopfItem>? Starters { get; set; }
-
-        [JsonConverter(typeof(SingleOrArrayConverter<TopfItem>))]
-        public List<TopfItem>? Salad { get; set; }
-
-        [JsonConverter(typeof(SingleOrArrayConverter<TopfItem>))]
-        public List<TopfItem>? MeatMains { get; set; }
-
-        [JsonConverter(typeof(SingleOrArrayConverter<TopfItem>))]
-        public List<TopfItem>? VegetarianMains { get; set; }
-
-        [JsonConverter(typeof(SingleOrArrayConverter<TopfItem>))]
-        public List<TopfItem>? Dessert { get; set; }
-    }
-
-    private class TopfItem
-    {
-        public string? Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public List<string>? Dietary { get; set; }
-    }
-
-    private class SingleOrArrayConverter<T> : JsonConverter<List<T>>
-    {
-        public override List<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (reader.TokenType == JsonTokenType.StartArray)
-            {
-                return JsonSerializer.Deserialize<List<T>>(ref reader, options);
-            }
-
-            if (reader.TokenType == JsonTokenType.StartObject)
-            {
-                var item = JsonSerializer.Deserialize<T>(ref reader, options);
-                return item != null ? new List<T> { item } : new List<T>();
-            }
-
-            if (reader.TokenType == JsonTokenType.Null)
-            {
-                return new List<T>();
-            }
-
-            throw new JsonException($"Unexpected token {reader.TokenType} while parsing {typeof(T).Name} list.");
-        }
-
-        public override void Write(Utf8JsonWriter writer, List<T> value, JsonSerializerOptions options)
-        {
-            JsonSerializer.Serialize(writer, value, options);
-        }
-    }
 }

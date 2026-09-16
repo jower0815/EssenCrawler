@@ -34,9 +34,10 @@ if (string.IsNullOrWhiteSpace(destPath))
 var providers = new List<IMenuProvider>
 {
     //new DummyProvider(fetcher),
+    new AchilleusProvider(fetcher),
     //new AkakikoProvider(fetcher),
     new BieradiesProvider(fetcher),
-    //new DolcePensieroProvider(fetcher),
+    new DolcePensieroProvider(fetcher),
     new EllasProvider(fetcher),
     new FaerberProvider(fetcher),
     new FladereiProvider(fetcher),

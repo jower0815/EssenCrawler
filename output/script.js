@@ -160,11 +160,67 @@
       updateOrderFromList();
     }
 
+    // === NEW: Drag & Drop per Pointer Events (Maus + Touch) ===
+    function enableDragReorder(itemEl, handleEl) {
+      let dragging = false;
+
+      function onPointerMove(ev) {
+        if (!dragging) return;
+        ev.preventDefault();
+
+        const items = Array.from(list.querySelectorAll(".rsp-item")).filter(n => n !== itemEl);
+        const y = ev.clientY;
+
+        for (const other of items) {
+          const rect = other.getBoundingClientRect();
+          const middle = rect.top + rect.height / 2;
+
+          if (y < middle) {
+            if (other.previousElementSibling !== itemEl) {
+              list.insertBefore(itemEl, other);
+            }
+            return;
+          }
+        }
+        // unter allen anderen Items -> ans Ende
+        if (list.lastElementChild !== itemEl) {
+          list.appendChild(itemEl);
+        }
+      }
+
+      function onPointerUp() {
+        if (!dragging) return;
+        dragging = false;
+        itemEl.classList.remove("rsp-dragging");
+        // === NEW: Listener auf document, nicht auf handleEl -> überlebt das
+        // Umhängen von itemEl im DOM (insertBefore/appendChild) während des Ziehens ===
+        document.removeEventListener("pointermove", onPointerMove);
+        document.removeEventListener("pointerup", onPointerUp);
+        document.removeEventListener("pointercancel", onPointerUp);
+        updateOrderFromList();
+      }
+
+      handleEl.addEventListener("pointerdown", (ev) => {
+        ev.preventDefault();
+        dragging = true;
+        itemEl.classList.add("rsp-dragging");
+        document.addEventListener("pointermove", onPointerMove);
+        document.addEventListener("pointerup", onPointerUp);
+        document.addEventListener("pointercancel", onPointerUp);
+      });
+    }
+
     // Checkboxen + Move-Buttons
     for (const id of ids) {
       const label = document.createElement("label");
       label.className = "rsp-item";
       label.dataset.id = id;               // === NEW: ID hier ablegen ===
+
+      // === NEW: Drag-Handle zum Verschieben per Drag & Drop ===
+      const dragHandle = document.createElement("span");
+      dragHandle.className = "rsp-dragHandle";
+      dragHandle.textContent = "⠿";
+      dragHandle.title = "Zum Verschieben ziehen";
 
       const cb = document.createElement("input");
       cb.type = "checkbox";
@@ -177,6 +233,7 @@
       });
 
       const txt = document.createElement("span");
+      txt.className = "rsp-label-text";
       txt.textContent = LABEL_MAP[id] || id;
 
       // === NEW: Move-Buttons nur im Settings-Panel ===
@@ -205,9 +262,11 @@
 
       moveWrapper.append(btnUp, btnDown);
 
-      label.append(cb, txt, moveWrapper);
+      label.append(dragHandle, cb, txt, moveWrapper);
       list.appendChild(label);
       boxes.set(id, cb);
+
+      enableDragReorder(label, dragHandle);
     }
 
     // Button-Callbacks

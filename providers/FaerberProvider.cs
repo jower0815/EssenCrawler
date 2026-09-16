@@ -31,10 +31,16 @@ public class FaerberProvider : IMenuProvider
 
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
-            var datum = DateTime.Today.ToString("yyyy'/'MM");
+            var datum = date.ToString("yyyy'/'MM");
             var img = doc.DocumentNode.SelectSingleNode($"//img[contains(@src, '{datum}')]");
 
-            
+            if (img == null)
+            {
+                result.Status = "NO_DATA";
+                result.Notes = $"Kein Bild für '{datum}' gefunden.";
+                return result;
+            }
+
             result.ImageUrl = img.GetAttributeValue("src", "./404.png");
 
             return result;

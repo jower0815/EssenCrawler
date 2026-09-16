@@ -34,7 +34,13 @@ public class SchachtelwirtProvider : IMenuProvider
             doc.LoadHtml(html);
             var img = doc.DocumentNode.SelectSingleNode("//img[@id='img_comp-l2cdzq1o']");
 
-            
+            if (img == null)
+            {
+                result.Status = "NO_DATA";
+                result.Notes = "Kein Bild-Element gefunden.";
+                return result;
+            }
+
             result.ImageUrl = img.GetAttributeValue("src", "./404.png");
 
             return result;

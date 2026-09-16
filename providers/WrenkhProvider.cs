@@ -32,7 +32,7 @@ public class WrenkhProvider : IMenuProvider
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            var datum = DateTime.Today.ToString("ddd")
+            var datum = date.ToString("ddd")
                 .ToUpper()
                 .Replace(".", "");
             

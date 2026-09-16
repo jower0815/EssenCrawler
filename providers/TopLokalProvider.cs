@@ -43,24 +43,40 @@ public class TopLokalProvider : IMenuProvider
             var xpath = $"//p[comment()[contains(.,'{weekday}')]]/following-sibling::div[1]";
             var dayRoot = doc.DocumentNode.SelectSingleNode(xpath);
 
+            if (dayRoot == null)
+            {
+                result.Status = "NO_DATA";
+                result.Notes = $"Kein Eintrag für '{weekday}' gefunden.";
+                return result;
+            }
 
             //Suppe
             var suppe = dayRoot.SelectSingleNode(".//div[contains(.,'Suppe')]/following-sibling::div[1]");
-            var SuppeSection = result.GetOrAddSection("Suppe");
-            SuppeSection.Items.Add(suppe.InnerText);
+            if (suppe != null)
+            {
+                var SuppeSection = result.GetOrAddSection("Suppe");
+                SuppeSection.Items.Add(suppe.InnerText);
+            }
 
             //Menü
             var Menue1 = dayRoot.SelectSingleNode(".//div[contains(.,'Menüs')]/following-sibling::div[1]");
             var Menue2 = dayRoot.SelectSingleNode(".//div[contains(.,'Menüs')]/following-sibling::div[2]");
-            var menuSection = result.GetOrAddSection("Menue");
-            menuSection.Items.Add(Menue1.InnerText);
-            menuSection.Items.Add(Menue2.InnerText);
+            if (Menue1 != null || Menue2 != null)
+            {
+                var menuSection = result.GetOrAddSection("Menue");
+                if (Menue1 != null) menuSection.Items.Add(Menue1.InnerText);
+                if (Menue2 != null) menuSection.Items.Add(Menue2.InnerText);
+            }
 
             //Dessert
             var dessert = dayRoot.SelectSingleNode(".//div[contains(.,'Dessert')]/following-sibling::div[1]");
-            var dessertSection = result.GetOrAddSection("Dessert");
-            dessertSection.Items.Add(dessert.InnerText);
+            if (dessert != null)
+            {
+                var dessertSection = result.GetOrAddSection("Dessert");
+                dessertSection.Items.Add(dessert.InnerText);
+            }
 
+            result.Status = result.Sections.Count > 0 ? "OK" : "NO_DATA";
             return result;
         }
         catch (Exception ex)

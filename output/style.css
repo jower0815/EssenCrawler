@@ -51,6 +51,24 @@ body {
     border-radius: 5px;
 }
 
+.Allergene {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 16px;
+    border-radius: 12px;
+	
+	text-decoration: none;
+    color: #000;
+    font-weight: bold;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
 /* =========================
    📦 CONTENT CARD
 ========================= */
@@ -136,8 +154,27 @@ a:hover {
     gap: .5rem;
 }
 
-.rsp-item span:first-of-type {
+.rsp-item .rsp-label-text {
     flex: 1;
+}
+
+.rsp-dragHandle {
+    flex: none;
+    cursor: grab;
+    color: #999;
+    font-size: 1.1em;
+    padding: 0 .25rem;
+    touch-action: none;
+    user-select: none;
+}
+
+.rsp-dragHandle:active {
+    cursor: grabbing;
+}
+
+.rsp-item.rsp-dragging {
+    opacity: .5;
+    background: #e6dbc3;
 }
 
 .rsp-moveButtons {
