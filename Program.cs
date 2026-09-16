@@ -6,6 +6,11 @@ using System.IO;
 using System.Windows.Markup;
 using Microsoft.Extensions.Configuration;
 
+if (await SelfUpdater.CheckAndUpdateAsync(args))
+{
+    return;
+}
+
 var date = DateTime.Today;
 
 var fetcher = new Fetcher();
